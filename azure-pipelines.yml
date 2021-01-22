@@ -25,7 +25,7 @@ steps:
 
 - task: AWSShellScript@1
   inputs:
-    awsCredentials: 'AWS FN-BOT'
+    awsCredentials: 'postcode-lookup-deploy'
     regionName: 'eu-west-2'
     scriptType: 'inline'
     inlineScript: 'sam build --parameter-overrides "Stage=$(STAGE), TableName=$(TABLENAME)"'
