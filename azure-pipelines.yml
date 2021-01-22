@@ -1,0 +1,40 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+steps:
+- script: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  displayName: 'Install homebrew'
+
+- script: |
+    test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
+    test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+    test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
+    echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile 
+  displayName: 'Add homebrew to path'
+
+- script: |
+    brew tap aws/tap
+    brew install aws-sam-cli
+    sam --version
+  displayName: 'Install AWS SAM CLI'
+
+- task: AWSShellScript@1
+  inputs:
+    awsCredentials: 'AWS FN-BOT'
+    regionName: 'eu-west-2'
+    scriptType: 'inline'
+    inlineScript: 'sam build --parameter-overrides "Stage=$(STAGE), TableName=$(TABLENAME)"'
+  displayName: 'Run AWS SAM build'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)/.aws-sam'
+    ArtifactName: 'awsSamBuild'
+    publishLocation: 'Container'
+  displayName: 'Publish AWS SAM build to release pipeline'
+  # this links the built artifact to the release pipeline so it can be deployed
