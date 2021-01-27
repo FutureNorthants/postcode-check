@@ -3,8 +3,12 @@
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-2'});
 const tableName = process.env.TABLE_NAME;
+var boundaryData = require('NCCAllAreasExport.json');
 
 exports.lambdaHandler = async (event, context) => {
+    boundaryData.forEach(element => {
+        console.log(element.NAME);
+    });
     var postcode = event.pathParameters.postcode.replace('%20', '').toUpperCase();
     console.log(postcode);
     //const item = await getCouncilByPostcode(postcode);
