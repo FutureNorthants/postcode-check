@@ -35,7 +35,7 @@ Resources:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             RestApiId:
-              Ref: PostcodeCheckApi
+              Ref: PostcodeCheckApiJSON
             Path: /check-postcode/{postcode}
             Method: get
       Policies:
@@ -45,7 +45,7 @@ Resources:
         Variables:
           TABLE_NAME: !Ref TableName
 
-  PostcodeCheckApi:
+  PostcodeCheckApiJSON:
     Type: AWS::Serverless::Api
     Properties:
       StageName:
@@ -54,41 +54,41 @@ Resources:
         AllowMethods: "'GET'"
         AllowOrigin: "'*'"
       OpenApiVersion: '2.0'
-      Auth:
-        ApiKeyRequired: true
+      # Auth:
+      #   ApiKeyRequired: true
 
-  ## generate apikey
-  ApiKey:
-    Type: AWS::ApiGateway::ApiKey
-    Properties:
-      Name: !Sub
-      - '${Stage}-${StackName}-apikey'
-      - Stage: !Ref Stage
-        StackName: !Ref AWS::StackName
-      Description: "Api key for run step function api"
-      Enabled: true
-      StageKeys:
-        - RestApiId: !Ref PostcodeCheckApi
-          StageName: !Ref Stage
+  # ## generate apikey
+  # ApiKey:
+  #   Type: AWS::ApiGateway::ApiKey
+  #   Properties:
+  #     Name: !Sub
+  #     - '${Stage}-${StackName}-apikey'
+  #     - Stage: !Ref Stage
+  #       StackName: !Ref AWS::StackName
+  #     Description: "Api key for run step function api"
+  #     Enabled: true
+  #     StageKeys:
+  #       - RestApiId: !Ref PostcodeCheckApi
+  #         StageName: !Ref Stage
 
-  ApiUsagePlan:
-    Type: "AWS::ApiGateway::UsagePlan"
-    Properties:
-      ApiStages:
-        - ApiId: !Ref PostcodeCheckApi
-          Stage: !Ref Stage
-      Description: !Join [" ", [{"Ref": "AWS::StackName"}, "usage plan"]]
-      Quota:
-        Limit: 100
-        Period: MONTH
-      UsagePlanName: !Join ["", [{"Ref": "AWS::StackName"}, "-usage-plan"]]
+  # ApiUsagePlan:
+  #   Type: "AWS::ApiGateway::UsagePlan"
+  #   Properties:
+  #     ApiStages:
+  #       - ApiId: !Ref PostcodeCheckApi
+  #         Stage: !Ref Stage
+  #     Description: !Join [" ", [{"Ref": "AWS::StackName"}, "usage plan"]]
+  #     Quota:
+  #       Limit: 100
+  #       Period: MONTH
+  #     UsagePlanName: !Join ["", [{"Ref": "AWS::StackName"}, "-usage-plan"]]
 
-  ApiUsagePlanKey:
-    Type: "AWS::ApiGateway::UsagePlanKey"
-    DependsOn: 
-      - PostcodeCheckApi
-    Properties:
-      KeyId: !Ref ApiKey
-      KeyType: API_KEY
-      UsagePlanId: !Ref ApiUsagePlan
+  # ApiUsagePlanKey:
+  #   Type: "AWS::ApiGateway::UsagePlanKey"
+  #   DependsOn: 
+  #     - PostcodeCheckApi
+  #   Properties:
+  #     KeyId: !Ref ApiKey
+  #     KeyType: API_KEY
+  #     UsagePlanId: !Ref ApiUsagePlan
 
