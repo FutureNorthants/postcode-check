@@ -22,6 +22,8 @@ Parameters:
   TableName:
     Type: String
     Default: nccpostcodes
+  OsApiKey:
+    Type: String
 
 Resources:
   PostcodeCheckFunction:
@@ -44,6 +46,7 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref TableName
+          OS_API_KEY: !Ref OsApiKey
 
   PostcodeCheckApiJSON:
     Type: AWS::Serverless::Api

@@ -3,15 +3,19 @@
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-2'});
 const tableName = process.env.TABLE_NAME;
+const osKey = process.env.OS_API_KEY;
+const axios = require('axios').default;
 var boundaryData = require('NCCAllAreasExport.json');
 
 exports.lambdaHandler = async (event, context) => {
+
     boundaryData.forEach(element => {
         console.log(element.NAME);
     });
+    //format postcode
     var postcode = event.pathParameters.postcode.replace('%20', '').toUpperCase();
-    console.log(postcode);
-    //const item = await getCouncilByPostcode(postcode);
+
+    await checkPolygon(postcode)
 
     return getBasicCouncilByPostcode(event);
 
@@ -21,9 +25,18 @@ exports.lambdaHandler = async (event, context) => {
     }
 }
 
+async function checkPolygon(postcode){
+    console.log(postcode);
+    var postcodeData = await axios.get(`https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?postcode=${postcode}&key=${osKey}&dataset=DPA`)
+    console.log(postcodeData.data.results);
+    //get coordinates for postcode
+    //loop through each set of coordinates for each council and check if it is inside
+    //check to see if it is only in one. if it is return that council
+    // if it is in more than one loop through each address and get which authority each point is inside and return the list.
+}
+
 async function getBasicCouncilByPostcode(event) {
     var postcode = event.pathParameters.postcode.replace('%20', '').toUpperCase();
-    console.log(postcode);
     var postcodeStart
 
     if(postcode.length==7){
