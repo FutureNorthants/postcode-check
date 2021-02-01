@@ -5,6 +5,7 @@ const docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-2'});
 const tableName = process.env.TABLE_NAME;
 const osKey = process.env.OS_API_KEY;
 const axios = require('axios').default;
+var turf = require('@turf/turf');
 var boundaryData = require('NCCAllAreasExport.json');
 
 exports.lambdaHandler = async (event, context) => {
@@ -26,11 +27,34 @@ exports.lambdaHandler = async (event, context) => {
 }
 
 async function checkPolygon(postcode){
-    console.log(postcode);
-    var postcodeData = await axios.get(`https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?postcode=${postcode}&key=${osKey}&dataset=DPA`)
-    console.log(postcodeData.data.results);
     //get coordinates for postcode
+    //get the data for the postcode
+    var postcodeData = await axios.get(`https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?postcode=${postcode}&key=${osKey}&dataset=DPA&output_SRS=EPSG:4326`)
+    var results = postcodeData.data.results;
+    var coordArray = [];
+
+    //loop through the data and put each coordinate in an array
+    results.forEach(element => {
+        coordArray.push([element.DPA.LNG, element.DPA.LAT])
+    });
+    //put the first coordinate at the end so it joins up
+    coordArray.push([results[0].DPA.LNG, results[0].DPA.LAT])
+    var polygon = turf.polygon([coordArray], {name:'postcodePoly'})
+    console.log(polygon);
+    
     //loop through each set of coordinates for each council and check if it is inside
+    console.log(boundaryData[0].geometry.coordinates);
+
+    var authPolygon = turf.polygon(boundaryData[0].geometry.coordinates, {name:'authPoly'})
+    console.log(authPolygon);
+
+    var crosses = turf.booleanPointInPolygon([results[0].DPA.LNG, results[0].DPA.LAT], authPolygon)
+
+    console.log(crosses);
+
+    // boundaryData.forEach(element => {
+            
+    //     })
     //check to see if it is only in one. if it is return that council
     // if it is in more than one loop through each address and get which authority each point is inside and return the list.
 }
