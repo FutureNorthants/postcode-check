@@ -10,31 +10,46 @@ var boundaryData = require('NCCAllAreasExport.json');
 
 exports.lambdaHandler = async (event, context) => {
     //format postcode
+
+    //postcode regex to remove things that don't 
     var postcode = event.pathParameters.postcode.replace('%20', '').toUpperCase();
+
+    // Create a regex for the expected postcode 
+    let regexps = new RegExp('^(([A-Z]{2}[0-9]{1,2})([0-9]{1}[A-Z]{2}))$')
+    
+    if(regexps.test(postcode)==false) {
+        return {
+            statusCode: 400,
+            body: "postcode in incorrect format"
+        }
+    }
 
     var result = await checkPolygon(postcode)
 
-    return {
-        statusCode: 200,
-        body: JSON.stringify(result)
-    }
+    return result
 }
 
 async function checkPolygon(postcode){
     //get coordinates for postcode
     //get the data for the postcode
-    var postcodeData = await axios.get(`https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?postcode=${postcode}&key=${osKey}&dataset=DPA&output_SRS=EPSG:4326`)
-    var results = postcodeData.data.results;
-    var coordArray = [];
+    try {
+        var postcodeData = await axios.get(`https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?postcode=${postcode}&key=${osKey}&dataset=DPA&output_SRS=EPSG:4326`)
+    } catch (error) {
+        console.log(error)
+        return {
+            statusCode: 500,
+            body: error.response.data.error.message
+        }
+    }
 
-    // //loop through the data and put each coordinate in an array
-    // results.forEach(element => {
-    //     coordArray.push([element.DPA.LNG, element.DPA.LAT])
-    // });
-    // //put the first coordinate at the end so it joins up
-    // coordArray.push([results[0].DPA.LNG, results[0].DPA.LAT])
-    // var polygon = turf.polygon([coordArray], {name:'postcodePoly'})
-    // console.log(polygon);
+    if(postcodeData.data.header.totalresults === 0){
+        return {
+            statusCode: 500,
+            body: "postcode is invalid"
+        }
+    }
+    console.log(postcodeData)
+    var results = postcodeData.data.results;
     
     //empty array for a list 
     var sovAuthResult = [];
@@ -70,12 +85,23 @@ async function checkPolygon(postcode){
             
     })
 
+    if(unitary.length === 0){
+        return{
+            statusCode: 400,
+            body:"Not a northamptonshire postcode"
+        }
+    }
+
     return {
-        numOfSovereign: sovAuthResult.length,
-        sovereign: sovAuthResult,
-        numOfUnitary: unitary.length,
-        unitary: unitary,
-        addresses: addressList
+        statusCode: 200,
+        body:JSON.stringify({
+            numOfSovereign: sovAuthResult.length,
+            sovereign: sovAuthResult,
+            numOfUnitary: unitary.length,
+            unitary: unitary,
+            addresses: addressList
+        })
+
     }
     //check to see if it is only in one. if it is return that council
     // if it is in more than one loop through each address and get which authority each point is inside and return the list.
