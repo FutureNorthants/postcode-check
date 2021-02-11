@@ -7,5 +7,5 @@ s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1fcvajeue9xxx"
 s3_prefix = "postcodejson"
 region = "eu-west-2"
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = "Stage=\"dev\" TableName=\"nccpostcodes\" OsApiKey=\"mGvGWUtOi5aRYpACv6PyiofCOPkNOhPG\""
+parameter_overrides = "Stage=\"dev\" OsApiKey=\"mGvGWUtOi5aRYpACv6PyiofCOPkNOhPG\""
 
