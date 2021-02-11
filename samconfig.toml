@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "postcodejson"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1fcvajeue9xxx"
+s3_prefix = "postcodejson"
+region = "eu-west-2"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Stage=\"dev\" TableName=\"nccpostcodes\" OsApiKey=\"mGvGWUtOi5aRYpACv6PyiofCOPkNOhPG\""
+
