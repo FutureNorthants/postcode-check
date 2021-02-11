@@ -25,7 +25,7 @@ async function checkPolygon(postcode){
     //get the data for the postcode
     var postcodeData = await axios.get(`https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?postcode=${postcode}&key=${osKey}&dataset=DPA&output_SRS=EPSG:4326`)
     var results = postcodeData.data.results;
-    var coordArray = [];
+    // var coordArray = [];
 
     // //loop through the data and put each coordinate in an array
     // results.forEach(element => {
