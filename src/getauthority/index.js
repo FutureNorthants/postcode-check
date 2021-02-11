@@ -9,20 +9,14 @@ var turf = require('@turf/turf');
 var boundaryData = require('NCCAllAreasExport.json');
 
 exports.lambdaHandler = async (event, context) => {
-
-    boundaryData.forEach(element => {
-        console.log(element.NAME);
-    });
     //format postcode
     var postcode = event.pathParameters.postcode.replace('%20', '').toUpperCase();
 
-    await checkPolygon(postcode)
-
-    return getBasicCouncilByPostcode(event);
+    var result = await checkPolygon(postcode)
 
     return {
         statusCode: 200,
-        body: JSON.stringify(item)
+        body: JSON.stringify(result)
     }
 }
 
@@ -42,19 +36,46 @@ async function checkPolygon(postcode){
     var polygon = turf.polygon([coordArray], {name:'postcodePoly'})
     console.log(polygon);
     
+    //empty array for a list 
+    var sovAuthResult = [];
+    var addressList = [];
+    var unitary = [];
+
     //loop through each set of coordinates for each council and check if it is inside
-    console.log(boundaryData[0].geometry.coordinates);
+    boundaryData.forEach(boundaryDataItem => {
+        var authPolygon = turf.polygon(boundaryDataItem.geometry.coordinates, {name:'authPoly'})
 
-    var authPolygon = turf.polygon(boundaryData[0].geometry.coordinates, {name:'authPoly'})
-    console.log(authPolygon);
+        results.forEach(function(result, index, array) {
+            var crosses = turf.booleanPointInPolygon([result.DPA.LNG, result.DPA.LAT], authPolygon)
+            if (crosses){
+                var unitaryItem = getUnitary(boundaryDataItem.NAME)
+                var sovereignCode = getSovereignCode(boundaryDataItem.NAME)
+                result.DPA["SOVEREIGN_COUNCIL_NAME"] = boundaryDataItem.NAME;
+                result.DPA["SOVEREIGN_COUNCIL_CODE"] = sovereignCode;
+                result.DPA["UNITARY_COUNCIL_NAME"] = unitaryItem.unitary;
+                result.DPA["UNITARY_COUNCIL_CODE"] = unitaryItem.unitaryCode;
+                addressList.push(result);
 
-    var crosses = turf.booleanPointInPolygon([results[0].DPA.LNG, results[0].DPA.LAT], authPolygon)
+                if(sovAuthResult.some(item => item.sovereignName === boundaryDataItem.NAME)===false){
+                    sovAuthResult.push({sovereignName: boundaryDataItem.NAME, sovereignCode: sovereignCode});
+                    if(unitary.some(item => item.unitary === unitaryItem.unitary)===false){
+                        unitary.push(unitaryItem);
+                    }
+                }
 
-    console.log(crosses);
-
-    // boundaryData.forEach(element => {
+                
+            }
+        });
             
-    //     })
+    })
+
+    return {
+        numOfSovereign: sovAuthResult.length,
+        sovereign: sovAuthResult,
+        numOfUnitary: unitary.length,
+        unitary: unitary,
+        addresses: addressList
+    }
     //check to see if it is only in one. if it is return that council
     // if it is in more than one loop through each address and get which authority each point is inside and return the list.
 }
@@ -208,20 +229,71 @@ async function getBasicCouncilByPostcode(event) {
     };
 };
 
-async function getCouncilByPostcode(postcode){
-    let params = {
-        TableName: tableName,
-        KeyConditionExpression: "#postcode = :postcode",
-        ExpressionAttributeNames: {
-            "#postcode": "postcode"
-        },
-        ExpressionAttributeValues: {
-            ":postcode": postcode
-        }
+function getUnitary(sovereignAuthority){
+    var unitaryCode;
+    var unitary;
+    switch(sovereignAuthority){
+        case "SOUTH NORTHAMPTONSHIRE COUNCIL":
+            unitary = 'WNC';
+            unitaryCode = 2;
+            break;
+        case "DAVENTRY DISTRICT COUNCIL":
+            unitary = 'WNC';
+            unitaryCode = 2;
+            break;
+        case "NORTHAMPTON BOROUGH":
+            unitary = 'WNC';
+            unitaryCode = 2;
+            break;
+        case "BOROUGH COUNCIL OF WELLINGBOROUGH":
+            unitary = 'NNC';
+            unitaryCode = 1;
+            break;
+        case "EAST NORTHAMPTONSHIRE COUNCIL":
+            unitary = 'NNC';
+            unitaryCode = 1;
+            break;
+        case "KETTERING BOROUGH COUNCIL":
+            unitary = 'NNC';
+            unitaryCode = 1;
+            break;
+        case "CORBY BOROUGH":
+            unitary = 'NNC';
+            unitaryCode = 1;
+            break;
     }
 
-    let dbresult = await docClient.query(params).promise();
+    return {
+        unitary: unitary,
+        unitaryCode: unitaryCode
+    }
+}
 
-    console.log(JSON.stringify(dbresult));
-    return JSON.stringify(dbresult);
+function getSovereignCode(sovereignAuthority){
+    var sovereignCode;
+    switch(sovereignAuthority){
+        case "SOUTH NORTHAMPTONSHIRE COUNCIL":
+            sovereignCode = 6;
+            break;
+        case "DAVENTRY DISTRICT COUNCIL":
+            sovereignCode = 2;
+            break;
+        case "NORTHAMPTON BOROUGH":
+            sovereignCode = 5;
+            break;
+        case "BOROUGH COUNCIL OF WELLINGBOROUGH":
+            sovereignCode = 7;
+            break;
+        case "EAST NORTHAMPTONSHIRE COUNCIL":
+            sovereignCode = 3;
+            break;
+        case "KETTERING BOROUGH COUNCIL":
+            sovereignCode = 4;
+            break;
+        case "CORBY BOROUGH":
+            sovereignCode = 1;
+            break;
+    }
+
+    return sovereignCode
 }
