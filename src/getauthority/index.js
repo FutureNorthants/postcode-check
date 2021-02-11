@@ -27,14 +27,14 @@ async function checkPolygon(postcode){
     var results = postcodeData.data.results;
     var coordArray = [];
 
-    //loop through the data and put each coordinate in an array
-    results.forEach(element => {
-        coordArray.push([element.DPA.LNG, element.DPA.LAT])
-    });
-    //put the first coordinate at the end so it joins up
-    coordArray.push([results[0].DPA.LNG, results[0].DPA.LAT])
-    var polygon = turf.polygon([coordArray], {name:'postcodePoly'})
-    console.log(polygon);
+    // //loop through the data and put each coordinate in an array
+    // results.forEach(element => {
+    //     coordArray.push([element.DPA.LNG, element.DPA.LAT])
+    // });
+    // //put the first coordinate at the end so it joins up
+    // coordArray.push([results[0].DPA.LNG, results[0].DPA.LAT])
+    // var polygon = turf.polygon([coordArray], {name:'postcodePoly'})
+    // console.log(polygon);
     
     //empty array for a list 
     var sovAuthResult = [];
@@ -43,6 +43,7 @@ async function checkPolygon(postcode){
 
     //loop through each set of coordinates for each council and check if it is inside
     boundaryData.forEach(boundaryDataItem => {
+        // loop through and create permeter for local auth
         var authPolygon = turf.polygon(boundaryDataItem.geometry.coordinates, {name:'authPoly'})
 
         results.forEach(function(result, index, array) {
@@ -80,6 +81,7 @@ async function checkPolygon(postcode){
     // if it is in more than one loop through each address and get which authority each point is inside and return the list.
 }
 
+//Basic function now unused
 async function getBasicCouncilByPostcode(event) {
     var postcode = event.pathParameters.postcode.replace('%20', '').toUpperCase();
     var postcodeStart
