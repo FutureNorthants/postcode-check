@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: postcode-lookup
+Transform:
+- AWS::Serverless-2016-10-31
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+  OsApiKey:
+    Type: String
+Resources:
+  PostcodeCheckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: PostcodeCheckFunction
+      Handler: index.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        PostcodeCheck:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: PostcodeCheckApiJSON
+            Path: /check-postcode/{postcode}
+            Method: get
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - AmazonDynamoDBReadOnlyAccess
+      Environment:
+        Variables:
+          OS_API_KEY:
+            Ref: OsApiKey
+  PostcodeCheckApiJSON:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName:
+        Ref: Stage
+      Cors:
+        AllowMethods: '''GET'''
+        AllowOrigin: '''*'''
+      OpenApiVersion: '2.0'
