@@ -15,6 +15,11 @@ exports.lambdaHandler = async (event, context) => {
     var result = await checkPolygon(postcode)
 
     return {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
+        "isBase64Encoded": false,
         statusCode: 200,
         body: JSON.stringify(result)
     }
