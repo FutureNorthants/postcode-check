@@ -19,9 +19,6 @@ Parameters:
   Stage:
     Type: String
     Default: dev
-  TableName:
-    Type: String
-    Default: nccpostcodes
   OsApiKey:
     Type: String
 
@@ -45,7 +42,6 @@ Resources:
         - AmazonDynamoDBReadOnlyAccess
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
           OS_API_KEY: !Ref OsApiKey
 
   PostcodeCheckApiJSON:
