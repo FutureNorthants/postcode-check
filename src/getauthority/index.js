@@ -267,32 +267,32 @@ function getUnitary(sovereignAuthority){
     var unitaryCode;
     var unitary;
     switch(sovereignAuthority){
-        case "SOUTH NORTHAMPTONSHIRE COUNCIL":
-            unitary = 'WNC';
+        case "South Northants":
+            unitary = 'West';
             unitaryCode = 2;
             break;
-        case "DAVENTRY DISTRICT COUNCIL":
-            unitary = 'WNC';
+        case "Daventry":
+            unitary = 'West';
             unitaryCode = 2;
             break;
-        case "NORTHAMPTON BOROUGH":
-            unitary = 'WNC';
+        case "Northampton":
+            unitary = 'West';
             unitaryCode = 2;
             break;
-        case "BOROUGH COUNCIL OF WELLINGBOROUGH":
-            unitary = 'NNC';
+        case "Wellingborough":
+            unitary = 'North';
             unitaryCode = 1;
             break;
-        case "EAST NORTHAMPTONSHIRE COUNCIL":
-            unitary = 'NNC';
+        case "East Northants":
+            unitary = 'North';
             unitaryCode = 1;
             break;
-        case "KETTERING BOROUGH COUNCIL":
-            unitary = 'NNC';
+        case "Kettering":
+            unitary = 'North';
             unitaryCode = 1;
             break;
-        case "CORBY BOROUGH":
-            unitary = 'NNC';
+        case "Corby":
+            unitary = 'North';
             unitaryCode = 1;
             break;
     }
@@ -306,25 +306,25 @@ function getUnitary(sovereignAuthority){
 function getSovereignCode(sovereignAuthority){
     var sovereignCode;
     switch(sovereignAuthority){
-        case "SOUTH NORTHAMPTONSHIRE COUNCIL":
+        case "South Northants":
             sovereignCode = 6;
             break;
-        case "DAVENTRY DISTRICT COUNCIL":
+        case "Daventry":
             sovereignCode = 2;
             break;
-        case "NORTHAMPTON BOROUGH":
+        case "Northampton":
             sovereignCode = 5;
             break;
-        case "BOROUGH COUNCIL OF WELLINGBOROUGH":
+        case "Wellingborough":
             sovereignCode = 7;
             break;
-        case "EAST NORTHAMPTONSHIRE COUNCIL":
+        case "East Northants":
             sovereignCode = 3;
             break;
-        case "KETTERING BOROUGH COUNCIL":
+        case "Kettering":
             sovereignCode = 4;
             break;
-        case "CORBY BOROUGH":
+        case "Corby":
             sovereignCode = 1;
             break;
     }

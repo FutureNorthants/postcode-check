@@ -3,7 +3,7 @@
     "$oid": "600ab95036d9b65314e25b60"
   },
   "FEAT_CODE": 27328,
-  "NAME": "DAVENTRY DISTRICT COUNCIL",
+  "NAME": "Daventry",
   "SHORTNAME": "DAVENTRY",
   "ABBREV": "DDC",
   "OPCS_CODE": "34UC",
@@ -37528,7 +37528,7 @@
     "$oid": "600e9e4436d9b65314e25b61"
   },
   "FEAT_CODE": 3904,
-  "NAME": "BOROUGH COUNCIL OF WELLINGBOROUGH",
+  "NAME": "Wellingborough",
   "SHORTNAME": "WELLINGBOROUGH",
   "ABBREV": "WBC",
   "OPCS_CODE": "34UH",
@@ -49785,7 +49785,7 @@
     "$oid": "600e9f5836d9b65314e25b62"
   },
   "FEAT_CODE": 3904,
-  "NAME": "CORBY BOROUGH",
+  "NAME": "Corby",
   "SHORTNAME": "CORBY",
   "ABBREV": "CBC",
   "OPCS_CODE": "34UB",
@@ -60882,7 +60882,7 @@
     "$oid": "600ea25636d9b65314e25b63"
   },
   "FEAT_CODE": 31232,
-  "NAME": "SOUTH NORTHAMPTONSHIRE COUNCIL",
+  "NAME": "South Northants",
   "SHORTNAME": "SOUTH NORTHAMPTONSHIRE",
   "ABBREV": "SNC",
   "OPCS_CODE": "34UG",
@@ -105855,7 +105855,7 @@
     "$oid": "600ea31436d9b65314e25b64"
   },
   "FEAT_CODE": 7808,
-  "NAME": "NORTHAMPTON BOROUGH",
+  "NAME": "Northampton",
   "SHORTNAME": "NORTHAMPTON",
   "ABBREV": "NBC",
   "OPCS_CODE": "34UF",
@@ -111680,7 +111680,7 @@
     "$oid": "600ea35c36d9b65314e25b65"
   },
   "FEAT_CODE": 31232,
-  "NAME": "EAST NORTHAMPTONSHIRE COUNCIL",
+  "NAME": "East Northants",
   "SHORTNAME": "EAST NORTHAMPTONSHIRE",
   "ABBREV": "ENC",
   "OPCS_CODE": "34UD",
@@ -137193,7 +137193,7 @@
     "$oid": "600ea3a136d9b65314e25b66"
   },
   "FEAT_CODE": 15616,
-  "NAME": "KETTERING BOROUGH COUNCIL",
+  "NAME": "Kettering",
   "SHORTNAME": "KETTERING",
   "ABBREV": "KBC",
   "OPCS_CODE": "34UE",
