@@ -3,12 +3,25 @@
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-2'});
 const tableName = process.env.TABLE_NAME;
-const osKey = process.env.OS_API_KEY;
+const wncOsKey = process.env.WNC_OS_API_KEY;
+const nncOsKey = process.env.NNC_OS_API_KEY;
 const axios = require('axios').default;
 var turf = require('@turf/turf');
 var boundaryData = require('NCCAllAreasExport.json');
 
 exports.lambdaHandler = async (event, context) => {
+    //choose keys
+    var osKey
+    if(!event.headers.Council) {
+        osKey = wncOsKey;
+    } else if(event.headers.Council.toUpperCase() === "WNC"){
+        osKey = wncOsKey;
+    } else if(event.headers.Council.toUpperCase() === "NNC"){
+        osKey = nncOsKey;
+    } else {
+        osKey = wncOsKey;
+    }
+    
     //format postcode
 
     //postcode regex to remove things that don't 
@@ -24,13 +37,13 @@ exports.lambdaHandler = async (event, context) => {
         }
     }
 
-    var result = await checkPolygon(postcode)
+    var result = await checkPolygon(postcode, osKey)
 
     return result;
 
 }
 
-async function checkPolygon(postcode){
+async function checkPolygon(postcode, osKey){
     //get coordinates for postcode
     //get the data for the postcode
     try {
