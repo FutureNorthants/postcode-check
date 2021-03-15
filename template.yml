@@ -19,7 +19,9 @@ Parameters:
   Stage:
     Type: String
     Default: dev
-  OsApiKey:
+  WncOsApiKey:
+    Type: String
+  NncOsApiKey:
     Type: String
 
 Resources:
@@ -42,7 +44,8 @@ Resources:
         - AmazonDynamoDBReadOnlyAccess
       Environment:
         Variables:
-          OS_API_KEY: !Ref OsApiKey
+          WNC_OS_API_KEY: !Ref WncOsApiKey
+          NNC_OS_API_KEY: !Ref NncOsApiKey
 
   PostcodeCheckApiJSON:
     Type: AWS::Serverless::Api
