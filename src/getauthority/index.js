@@ -32,6 +32,10 @@ exports.lambdaHandler = async (event, context) => {
     
     if(regexps.test(postcode)==false) {
         return {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+            },
             statusCode: 400,
             body: "postcode in incorrect format"
         }
@@ -51,6 +55,10 @@ async function checkPolygon(postcode, osKey){
     } catch (error) {
         console.log(error)
         return {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+            },
             statusCode: 500,
             body: error.response.data.error.message
         }
@@ -58,6 +66,10 @@ async function checkPolygon(postcode, osKey){
 
     if(postcodeData.data.header.totalresults === 0){
         return {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+            },
             statusCode: 500,
             body: "postcode is invalid"
         }
@@ -101,6 +113,10 @@ async function checkPolygon(postcode, osKey){
 
     if(unitary.length === 0){
         return{
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+            },
             statusCode: 400,
             body:"Not a northamptonshire postcode"
         }
