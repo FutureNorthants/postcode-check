@@ -47,7 +47,7 @@ async function checkPolygon(postcode, osKey){
     //get coordinates for postcode
     //get the data for the postcode
     try {
-        var postcodeData = await axios.get(`https://api.os.uk/search/addresses/v1/postcode?postcode=${postcode}&key=${osKey}&dataset=DPA&output_SRS=EPSG:4326`)
+        var postcodeData = await axios.get(`https://api.os.uk/search/places/v1/postcode?postcode=${postcode}&key=${osKey}&dataset=DPA&output_SRS=EPSG:4326`)
     } catch (error) {
         console.log(error)
         return {
